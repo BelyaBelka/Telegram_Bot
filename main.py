@@ -4,7 +4,7 @@ import logging
 import asyncio
 import json
 from aiogram import Bot, Dispatcher
-from aiogram.types import Message, ContentType, Update
+from aiogram.types import Message, ContentType
 from aiogram.filters import CommandStart, Command
 from aiogram.enums import ParseMode
 from aiogram.client.default import DefaultBotProperties
@@ -16,23 +16,6 @@ TOKEN = ""
 bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 
 dp = Dispatcher()
-
-#def load_last_messages_update_id():
-#    if not os.path.exists("Last_Messages_update_id.json"):
-#        save_last_messages_update_id(0)
-#        return 0
-
-#    try:
-#        with open("Last_Messages_update_id.json", encoding="UTF-8") as files_in:
-#            data = json.load(files_in)
-#            return data.get("Last_message_update_id", 0)
-#    except (FileNotFoundError, json.JSONDecodeError):
-#        return 0
-
-
-#def save_last_messages_update_id(update_id):
-#    with open("Last_Messages_update_id.json", "w", encoding="UTF-8") as files_in:
-#        return json.dump({"Last_message_update_id": update_id}, files_in, ensure_ascii=False, indent=4)
 
 def load_stats():
     try:
@@ -48,7 +31,6 @@ def save_stats():
 
 user_statistics = load_stats()
 
-#last_update_id = load_last_messages_update_id()
 
 # Хэндлер для команды /stat
 @dp.message(Command("stat", ignore_case=True, prefix="/"))
@@ -63,17 +45,6 @@ async def stats(message: Message):
                          f"Отправлено фото: {stats['photo']}\n"
                          f"Отправлено видео: {stats['video']}\n")
 
-
-
-#@dp.update()
-#async def handle_update(update: Update):
-#    print(f"Update ID: {Update.update_id}")
-#    global last_update_id
-#    if update.update_id <= last_update_id:
-#        return  # пропуск старых сообщений
-#
-#    last_update_id = Update.update_id
-#    save_last_messages_update_id(update.update_id)
 
 
 # Хэндлер для всех сообщений
@@ -93,6 +64,7 @@ async def count_messages(message: Message):
     elif message.content_type == ContentType.VIDEO:
         user_statistics[user_id]["video"] += 1
     save_stats()
+
 # Запуск бота
 async def main() -> None:
 
